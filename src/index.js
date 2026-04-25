@@ -42,12 +42,15 @@ app.use(
         frameSrc: ["'self'"],
       },
     },
-  })
+  }),
 );
 
-const clientOrigins = (process.env.CLIENT_URL || "http://localhost:5174").split(
-  ","
-);
+const clientOrigins = (
+  process.env.CLIENT_URL || "http://localhost:5174,https://www.taspef.org"
+)
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 app.use(cors({ origin: clientOrigins, credentials: true }));
 
 app.use(express.json());
@@ -57,7 +60,9 @@ app.use(morgan(process.env.NODE_ENV === "development" ? "dev" : "combined"));
 // ✅ Serve uploaded PDFs & images publicly (used by E-Magazines)
 app.use(
   "/uploads",
-  express.static(path.join(process.cwd(), process.env.UPLOAD_PATH || "uploads"))
+  express.static(
+    path.join(process.cwd(), process.env.UPLOAD_PATH || "uploads"),
+  ),
 );
 
 // ✅ Mount all API routes
