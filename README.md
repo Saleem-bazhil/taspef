@@ -15,6 +15,53 @@ cp .env.example .env
 npm run dev
 ```
 
+## Docker Deployment
+
+### Using Docker Compose (Recommended)
+
+```bash
+# Copy environment file
+cp .env.example .env
+
+# Build and start services
+docker-compose up --build
+
+# Or run in background
+docker-compose up -d --build
+```
+
+### Using Docker Only
+
+```bash
+# Build the image
+docker build -t taspef-server .
+
+# Run the container
+docker run -d \
+  --name taspef-app \
+  -p 5000:5000 \
+  -e MONGODB_URI=mongodb://host.docker.internal:27017/taspef \
+  -e JWT_SECRET=your-secret-key \
+  -v $(pwd)/uploads:/app/uploads \
+  taspef-server
+```
+
+### Docker Commands
+
+```bash
+# View logs
+docker-compose logs -f app
+
+# Stop services
+docker-compose down
+
+# Rebuild after code changes
+docker-compose up --build --force-recreate
+
+# Clean up
+docker-compose down -v --rmi all
+```
+
 ## Available Scripts
 
 - `npm run dev` - Start development server with nodemon
@@ -48,13 +95,13 @@ CLIENT_URL=http://localhost:5173
 
 ## API Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/files` | Upload file |
-| GET | `/api/files` | List files |
-| GET | `/api/files/:id` | Get file metadata |
-| GET | `/api/files/:id/download` | Download file |
-| DELETE | `/api/files/:id` | Delete file |
+| Method | Endpoint                  | Description       |
+| ------ | ------------------------- | ----------------- |
+| POST   | `/api/files`              | Upload file       |
+| GET    | `/api/files`              | List files        |
+| GET    | `/api/files/:id`          | Get file metadata |
+| GET    | `/api/files/:id/download` | Download file     |
+| DELETE | `/api/files/:id`          | Delete file       |
 
 ## Technologies
 
@@ -68,4 +115,3 @@ CLIENT_URL=http://localhost:5173
 ## Documentation
 
 See [main README](../README.md) for full documentation.
-
